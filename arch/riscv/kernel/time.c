@@ -11,7 +11,7 @@
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
  */
-
+#include <linux/clk-provider.h>
 #include <linux/clocksource.h>
 #include <linux/delay.h>
 #include <asm/sbi.h>
@@ -27,6 +27,10 @@ void __init time_init(void)
 	if (!cpu || of_property_read_u32(cpu, "timebase-frequency", &prop))
 		panic(KERN_WARNING "RISC-V system with no 'timebase-frequency' in DTS\n");
 	riscv_timebase = prop;
+
+#ifndef CONFIG_RISCV_TIMER
+	of_clk_init(NULL);
+#endif
 
 	lpj_fine = riscv_timebase / HZ;
 	timer_probe();

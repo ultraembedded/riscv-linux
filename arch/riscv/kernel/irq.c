@@ -11,6 +11,10 @@
 #include <linux/seq_file.h>
 #include <asm/smp.h>
 
+#ifdef CONFIG_XILINX_INTC
+extern unsigned int xintc_get_irq(void);
+#endif
+
 /*
  * Possible interrupt causes:
  */
@@ -38,9 +42,11 @@ asmlinkage void __irq_entry do_IRQ(struct pt_regs *regs)
 
 	irq_enter();
 	switch (regs->scause & ~INTERRUPT_CAUSE_FLAG) {
+#ifdef CONFIG_RISCV_TIMER
 	case INTERRUPT_CAUSE_TIMER:
 		riscv_timer_interrupt();
 		break;
+#endif
 #ifdef CONFIG_SMP
 	case INTERRUPT_CAUSE_SOFTWARE:
 		/*
@@ -51,7 +57,24 @@ asmlinkage void __irq_entry do_IRQ(struct pt_regs *regs)
 		break;
 #endif
 	case INTERRUPT_CAUSE_EXTERNAL:
+#ifdef CONFIG_XILINX_INTC
+		{
+			unsigned int irq;
+			irq = xintc_get_irq();
+		next_irq:
+			BUG_ON(!irq);
+			generic_handle_irq(irq);
+
+			irq = xintc_get_irq();
+			if (irq != -1U) {
+				pr_debug("next irq: %d\n", irq);
+				goto next_irq;
+			}
+		}
+		csr_clear(sip, 1 << INTERRUPT_CAUSE_EXTERNAL);
+#else
 		handle_arch_irq(regs);
+#endif
 		break;
 	default:
 		panic("unexpected interrupt cause");
@@ -65,3 +88,4 @@ void __init init_IRQ(void)
 {
 	irqchip_init();
 }
+
