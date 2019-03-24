@@ -39,3 +39,11 @@
 #define __NR_riscv_flush_icache (__NR_arch_specific_syscall + 15)
 #endif
 __SYSCALL(__NR_riscv_flush_icache, sys_riscv_flush_icache)
+
+#define __NR_sysriscv  __NR_arch_specific_syscall
+#ifndef __riscv_atomic
+__SYSCALL(__NR_sysriscv, sys_sysriscv)
+#endif
+
+#define RISCV_ATOMIC_CMPXCHG    1
+#define RISCV_ATOMIC_CMPXCHG64  2
