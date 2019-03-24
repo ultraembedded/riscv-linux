@@ -14,6 +14,10 @@
 #ifndef _ASM_RISCV_BITOPS_H
 #define _ASM_RISCV_BITOPS_H
 
+#ifndef CONFIG_RISCV_ISA_A
+#include <asm-generic/bitops.h>
+#else
+
 #ifndef _LINUX_BITOPS_H
 #error "Only <linux/bitops.h> can be included directly"
 #endif /* _LINUX_BITOPS_H */
@@ -214,5 +218,6 @@ static inline void __clear_bit_unlock(
 #include <asm-generic/bitops/non-atomic.h>
 #include <asm-generic/bitops/le.h>
 #include <asm-generic/bitops/ext2-atomic.h>
+#endif
 
 #endif /* _ASM_RISCV_BITOPS_H */

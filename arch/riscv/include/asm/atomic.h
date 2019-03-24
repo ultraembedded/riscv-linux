@@ -12,6 +12,10 @@
 #ifndef _ASM_RISCV_ATOMIC_H
 #define _ASM_RISCV_ATOMIC_H
 
+#ifndef CONFIG_RISCV_ISA_A
+#include <asm-generic/atomic.h>
+#else
+
 #ifdef CONFIG_GENERIC_ATOMIC64
 # include <asm-generic/atomic64.h>
 #else
@@ -346,6 +350,7 @@ static __always_inline long atomic64_sub_if_positive(atomic64_t *v, int offset)
 }
 
 #define atomic64_dec_if_positive(v)	atomic64_sub_if_positive(v, 1)
+#endif
 #endif
 
 #endif /* _ASM_RISCV_ATOMIC_H */

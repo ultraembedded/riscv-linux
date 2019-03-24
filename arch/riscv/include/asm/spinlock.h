@@ -15,6 +15,10 @@
 #ifndef _ASM_RISCV_SPINLOCK_H
 #define _ASM_RISCV_SPINLOCK_H
 
+#ifndef CONFIG_RISCV_ISA_A
+#include <asm-generic/spinlock.h>
+#else
+
 #include <linux/kernel.h>
 #include <asm/current.h>
 #include <asm/fence.h>
@@ -139,5 +143,6 @@ static inline void arch_write_unlock(arch_rwlock_t *lock)
 {
 	smp_store_release(&lock->lock, 0);
 }
+#endif
 
 #endif /* _ASM_RISCV_SPINLOCK_H */

@@ -41,8 +41,10 @@ ENTRY(_start)
 	/* Pick one hart to run the main boot sequence */
 	la a3, hart_lottery
 	li a2, 1
+#ifdef CONFIG_RISCV_ISA_A
 	amoadd.w a3, a2, (a3)
 	bnez a3, .Lsecondary_start
+#endif
 
 	/* Clear BSS for flat non-ELF images */
 	la a3, __bss_start
