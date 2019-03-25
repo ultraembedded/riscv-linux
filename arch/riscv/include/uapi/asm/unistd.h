@@ -17,6 +17,8 @@
 
 #ifdef __LP64__
 #define __ARCH_WANT_NEW_STAT
+#else
+#define __ARCH_WANT_STAT64
 #endif /* __LP64__ */
 
 #include <asm-generic/unistd.h>
